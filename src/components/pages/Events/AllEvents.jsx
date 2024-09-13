@@ -4,7 +4,8 @@ import EventsPage from "./EventsPage";
 
 const AllEvents = () => {
   const eventsData = useLoaderData();
-
+  console.log(eventsData);
+  
   const data = eventsData.events;
 
   return (

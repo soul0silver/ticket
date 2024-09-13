@@ -7,7 +7,12 @@ import Loading from "../../Loading/Loading";
 const NavBar = () => {
   const { logOut, user, loading } = useContext(AuthContext);
   if (loading) {
-    return <> <Loading /> </>
+    return (
+      <>
+        {" "}
+        <Loading />{" "}
+      </>
+    );
   }
   const handleLogOut = () => {
     logOut()
@@ -23,9 +28,8 @@ const NavBar = () => {
       <li>
         <NavLink to="/events">Events</NavLink>
       </li>
-
       <li>
-        <NavLink to="/speakers">Speaker</NavLink>
+        <NavLink to="/sponsor">My events</NavLink>
       </li>
       <li>
         <NavLink to="/about-us">About Us</NavLink>
@@ -64,7 +68,7 @@ const NavBar = () => {
               </ul>
             </div>
             <Link className="flex items-center" to="/">
-              <a className="normal-case text-rose-400 text-5xl py-4">TecH.e</a>
+              <a className="normal-case text-rose-400 text-5xl py-4">Event</a>
               <img className="w-12 h-12 rounded-full" src={logo} alt="" />
             </Link>
           </div>
@@ -97,8 +101,11 @@ const NavBar = () => {
                     </li>
                     <li>
                       <a className="justify-between mb-5 items-center">
-                        <Link to={`/paymentsReport`}><button className="btn btn-xs mb-2">Payment Reports</button></Link>
-
+                        <Link to={`/paymentsReport`}>
+                          <button className="btn btn-xs mb-2">
+                            Payment Reports
+                          </button>
+                        </Link>
                       </a>
                     </li>
 

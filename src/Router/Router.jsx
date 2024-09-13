@@ -13,6 +13,7 @@ import EventDetails from "../components/pages/Events/EventDetails/EventDetails";
 import Payment from "../components/pages/payment/Payment";
 import AllEvents from "./../components/pages/Events/AllEvents";
 import Report from "../components/pages/payment/PaymentsReport/Report";
+import Sponsor from "../components/pages/Sponsor/Sponsor";
 
 const router = createBrowserRouter([
   {
@@ -53,7 +54,14 @@ const router = createBrowserRouter([
         ),
         loader: () => fetch("/events-data.json"),
       },
-
+      {
+        path: "/sponsor",
+        element: (
+          <PrivateRoute>
+            <Sponsor />
+          </PrivateRoute>
+        ),
+      },
       {
         path: "/payment/:id",
         element: (
@@ -69,10 +77,12 @@ const router = createBrowserRouter([
         element: <AboutUs />,
       },
       {
-        path: '/paymentsReport',
-        element: <PrivateRoute>
-          <Report />
-        </PrivateRoute>
+        path: "/paymentsReport",
+        element: (
+          <PrivateRoute>
+            <Report />
+          </PrivateRoute>
+        ),
       },
       {
         path: "/login",
