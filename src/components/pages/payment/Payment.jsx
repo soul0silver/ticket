@@ -12,23 +12,12 @@ const Payment = ({ event }) => {
   const { db, user } = useContext(AuthContext)
 
   // console.log(event);
-  const notify = () =>
-    toast.success(
-      `${event.name}:
-        Booked Successfully
-       `
-    );
-
-  const mobileNotify = () => toast.error("Please give mobile number");
-  const transNotify = () => toast.error("Please give Transaction Id");
 
   const handleBooking = async (e) => {
     e.preventDefault();
-    const form = new FormData(e.currentTarget);
-    const mobileNumber = form.get("number");
-    const transactionId = form.get("transaction");
+
     const paymentData = {
-      userName: user?.displayName,
+      price: user?.displayName,
       mobileNumber: mobileNumber,
       transactionId: transactionId,
       amount: event?.price,
@@ -36,25 +25,6 @@ const Payment = ({ event }) => {
 
     }
 
-    if (mobileNumber && transactionId) {
-
-      try {
-        const docRef = await addDoc(collection(db, "payments"), paymentData);
-        console.log("Payment Details:", docRef.id);
-
-
-      } catch (error) {
-        console.error("Error adding documnet", error);
-      }
-      navigate('/paymentsReport')
-      notify();
-    } else {
-      if (mobileNumber === "") {
-        mobileNotify();
-        return;
-      }
-      transNotify();
-    }
   };
 
   return (

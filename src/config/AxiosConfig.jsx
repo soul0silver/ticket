@@ -1,5 +1,8 @@
 import axios from "axios";
-import firebase from "firebase/compat/app";
+import { getAuth } from "firebase/auth";
+import 'firebase/auth';
+import app from "../components/Firebase/firebase.config";
+
 const instance = axios.create({
   baseURL: "http://localhost:8000",
 });
@@ -7,11 +10,12 @@ instance.interceptors.request.use(
   function (config) {
     if (JSON.parse(localStorage.getItem("isSystemAcc"))) {
       let token = JSON.parse(localStorage.getItem("token")).token;
-      config.headers = { authorization: `Bearer ${token}` };
+      config.headers = { 
+        authorization: `Bearer ${token}` ,
+        isSystemAcc: true
+      };
     } else {
-      firebase
-        .auth()
-        .currentUser.getIdToken(false)
+      getAuth(app).currentUser?.getIdToken(false)
         .then((token) => {
           config.headers = { authorization: `Bearer ${token}` };
         });

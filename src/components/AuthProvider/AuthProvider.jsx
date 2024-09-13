@@ -3,7 +3,6 @@ import {
   createUserWithEmailAndPassword,
   getAuth,
   onAuthStateChanged,
-  signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
 } from "firebase/auth";
@@ -12,6 +11,7 @@ import { useState } from "react";
 import { createContext } from "react";
 import app from "../Firebase/firebase.config";
 import { getFirestore } from "firebase/firestore";
+import { instance } from "../../config/AxiosConfig";
 
 const auth = getAuth(app);
 
@@ -25,17 +25,19 @@ const db = getFirestore(app);
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-
-
+  const [authen, setAuth] = useState();
 
   const createUser = (email, password) => {
     setLoading(true);
     return createUserWithEmailAndPassword(auth, email, password);
   };
 
-  const signIn = (email, password) => {
+  const signIn = async (email, password) => {
     setLoading(true);
-    return signInWithEmailAndPassword(auth, email, password);
+    return await instance.post("api/sv1/auth/login", {
+      email: email,
+      password: password,
+    });
   };
 
   const googleLogin = () => {
@@ -50,7 +52,7 @@ const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const unSubscribe = onAuthStateChanged(auth, (currentUser) => {
-      // console.log("user auth state check", currentUser);
+      console.log("user auth state check", currentUser);
       setUser(currentUser);
       setLoading(false);
     });
@@ -59,14 +61,23 @@ const AuthProvider = ({ children }) => {
     };
   });
 
+  useEffect(()=>{
+    if (authen === null || authen === undefined)
+    setAuth(JSON.parse(localStorage.getItem('user')))
+  },[location.href])
+
   const authInfo = {
     db,
     user,
+    setUser,
     createUser,
     googleLogin,
     signIn,
     logOut,
     loading,
+    authen,
+    auth,
+    setAuth,
   };
 
   return (

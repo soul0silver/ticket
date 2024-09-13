@@ -3,11 +3,15 @@ import { useContext } from "react";
 import { AuthContext } from "../../AuthProvider/AuthProvider";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import { getAuth } from "firebase/auth";
+import "firebase/auth";
 import { FcGoogle } from "react-icons/Fc";
+import { instance } from "../../../config/AxiosConfig";
+import axios from "axios";
+import app from "../../Firebase/firebase.config";
 
 const Login = () => {
-  const { signIn, googleLogin } = useContext(AuthContext);
+  const { signIn, googleLogin, setAuth } = useContext(AuthContext);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -25,9 +29,16 @@ const Login = () => {
 
     signIn(email, password)
       .then((res) => {
-        console.log(res.user);
+        localStorage.setItem("token", JSON.stringify(res.data?.token));
+        localStorage.setItem(
+          "roles",
+          JSON.stringify(res.data?.roles?.map((v) => v.authority))
+        );
+        localStorage.setItem("isSystemAcc", JSON.stringify(true));
+        localStorage.setItem("user", JSON.stringify(res.data));
+        setAuth(res.data);
         notify();
-        navigate(location?.state ? location.state : "/");
+        navigate("/");
       })
       .catch((error) => {
         console.error(error);
@@ -36,13 +47,39 @@ const Login = () => {
   };
 
   const handleGoogleLogin = () => {
+    let req = null;
     googleLogin()
       .then((res) => {
         notify();
+        localStorage.setItem("isSystemAcc", JSON.stringify(false));
         notifyGoogle(res.user.displayName);
-        navigate(location?.state ? location.state : "/");
+        console.log(res);
+        req = {
+          email: res.user.email,
+          fullName: res.user.displayName,
+          avatar: res.user.photoURL,
+        };
+        getAuth(app)
+          .currentUser.getIdToken(false)
+          .then((res) => {
+            axios
+              .post("http://localhost:8000/api/sv1/auth/login-google", req, {
+                headers: { authorization: `Bearer ${res}` },
+              })
+              .then((res) => {
+                console.log(res);
+                localStorage.setItem(
+                  "roles",
+                  JSON.stringify(res.data?.roles?.map((v) => v.authority))
+                );
+              });
+            navigate("/");
+          });
       })
-      .catch((error) => notifyGoogleError(error.message));
+      .catch((error) => {
+        console.log(error);
+        notifyGoogleError(error.message);
+      });
   };
 
   return (
@@ -57,7 +94,7 @@ const Login = () => {
               Your email
             </label>
             <input
-              type="email"
+              type="text"
               name="email"
               id="email"
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
@@ -112,7 +149,7 @@ const Login = () => {
             </Link>
           </div>
         </form>
-        <div>
+        {/* <div>
           <div
             className="w-full btn  mt-4 flex gap-2 hover:bg-rose-400  mx-auto rounded-3xl bg-blue-600"
             onClick={handleGoogleLogin}
@@ -124,7 +161,7 @@ const Login = () => {
               </h2>
             </span>
           </div>
-        </div>
+        </div> */}
       </div>
       <ToastContainer />
     </div>

@@ -5,7 +5,7 @@ import logo from "../../../assets/video/logo.gif";
 import Loading from "../../Loading/Loading";
 
 const NavBar = () => {
-  const { logOut, user, loading } = useContext(AuthContext);
+  const { logOut, user, loading, authen, setAuth } = useContext(AuthContext);
   if (loading) {
     return (
       <>
@@ -15,9 +15,12 @@ const NavBar = () => {
     );
   }
   const handleLogOut = () => {
+    localStorage.clear();
+    setAuth()
     logOut()
       .then()
       .catch((error) => console.error(error));
+    
   };
 
   const navLinks = (
@@ -29,7 +32,7 @@ const NavBar = () => {
         <NavLink to="/events">Events</NavLink>
       </li>
       <li>
-        <NavLink to="/sponsor">My events</NavLink>
+        <NavLink to="/admin">Admin</NavLink>
       </li>
       <li>
         <NavLink to="/about-us">About Us</NavLink>
@@ -76,16 +79,25 @@ const NavBar = () => {
             <ul className="menu menu-horizontal text-xl  px-1">{navLinks}</ul>
           </div>
           <div className="navbar-end">
-            {user ? (
+            {(user !== null) | (authen !== null) ? (
               <>
                 <div className="dropdown dropdown-end">
                   <label
                     tabIndex={-1}
                     className="btn btn-ghost btn-circle avatar"
                   >
-                    <div className="w-10 rounded-full">
-                      <img src={user.photoURL} />
-                    </div>
+                    {user !== null && (
+                      <div className="w-10 rounded-full">
+                        <img src={user.photoURL} />
+                      </div>
+                    )}
+                    {authen === null ? "": authen?.avatar!== null ? (
+                      <img src={authen?.avatar} />
+                    ) : (
+                      <div className="w-10 bg-[#fec76f] rounded-full text-center leading-[38px]">
+                        {authen?.email?.substring(0, 1)}
+                      </div>
+                    )}
                   </label>
                   <ul
                     tabIndex={0}
@@ -94,7 +106,8 @@ const NavBar = () => {
                     <li>
                       <a className="justify-between mb-5 items-center">
                         <p className="text-2xl font-bold text-rose-600">
-                          {user.displayName}
+                          {user?.displayName}
+                          {authen && authen.email}
                         </p>
                         <span className="badge">New</span>
                       </a>
