@@ -14,7 +14,7 @@ const AboutFea = () => {
         src={gifTwo}
         alt=""
       />
-      <h2 className="md:text-9xl text-4xl font-semibold"> Welcome to TecH.e</h2>
+      <h2 className="md:text-9xl text-4xl font-semibold"> Welcome to Event</h2>
 
       <p className="text-lg font-light md:w-2/4 text-center mx-auto  mt-5">
         Explore the future of what is possible at TecH.e Join developers,

@@ -23,7 +23,7 @@ const Banner = () => {
 
         <div className="lg:p-10 p-5 flex items-center justify-center mx-auto lg:gap-10 lg:max-w-lg rounded-2xl bg-orange-600 bg-opacity-10 ">
           <div className="text-center text-white">
-            <h3 className="lg:text-2xl md:mb-5">December 27, 2023</h3>
+            <h3 className="lg:text-2xl md:mb-5">December 27, 2024</h3>
             <p className="text-sm lg:text-xl">
               BIC,Dhaka,Bangladesh and Online
             </p>
