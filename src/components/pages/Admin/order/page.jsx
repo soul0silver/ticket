@@ -44,6 +44,14 @@ export default function OrderManager() {
       if (res?.data[0]?.id !== undefined)
         getSummary(res?.data[0]?.id).then((res) => {
           if (res.status === 200) {
+            let arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+            let listData = arr.map((v) => {
+              let temp = res.data.filter((m) => m.month === v);
+              if (temp.length > 0) {
+                return temp[0].receive;
+              }
+              return 0;
+            });
             let config = {
               type: "bar",
               data: {
@@ -55,15 +63,18 @@ export default function OrderManager() {
                   "May",
                   "June",
                   "July",
+                  "August",
+                  "September",
+                  "October",
+                  "November",
+                  "December ",
                 ],
                 datasets: [
                   {
                     label: new Date().getFullYear(),
                     backgroundColor: "#4a5568",
                     borderColor: "#4a5568",
-                    data: res.data?.map((v) => {
-                      return v.receive | 0;
-                    }),
+                    data: listData,
                     fill: false,
                     barThickness: 8,
                   },
@@ -147,6 +158,15 @@ export default function OrderManager() {
     if (detail)
       getSummary(detail).then((res) => {
         if (res.status === 200) {
+          let arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+          let listData = arr.map((v) => {
+            let temp = res.data.filter((m) => m.month === v);
+            if (temp.length > 0) {
+              return temp[0].receive;
+            }
+            return 0;
+          });
+
           let config = {
             type: "bar",
             data: {
@@ -158,15 +178,18 @@ export default function OrderManager() {
                 "May",
                 "June",
                 "July",
+                "August",
+                "September",
+                "October",
+                "November",
+                "December ",
               ],
               datasets: [
                 {
                   label: new Date().getFullYear(),
                   backgroundColor: "#4a5568",
                   borderColor: "#4a5568",
-                  data: res.data?.map((v) => {
-                    return v.receive | 0;
-                  }),
+                  data: listData,
                   fill: false,
                   barThickness: 8,
                 },

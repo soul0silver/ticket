@@ -10,7 +10,7 @@ export default function EditEvent({ setOpen, id, setEdit }) {
     tag:'',
     title:'',
     introduce:'',
-    startDate:'',
+    startDay:'',
     startTime:'',
     description:'',
     price:0,
@@ -156,7 +156,7 @@ export default function EditEvent({ setOpen, id, setEdit }) {
                   id="date"
                   className="bg-gray-200 rounded pl-12 py-2 md:py-4 focus:outline-none w-full"
                   placeholder="Start day"
-                  value={event.startDate}
+                  value={event.startDay}
                   onChange={(e)=>setEvent({...event,startDay:e.target.value})}
                 />
               </div>

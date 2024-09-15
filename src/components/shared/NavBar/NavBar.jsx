@@ -16,9 +16,8 @@ const NavBar = () => {
   }
   const handleLogOut = () => {
     localStorage.clear();
-    setAuth()
+    setAuth();
     location.href = "/";
-    
   };
 
   const navLinks = (
@@ -29,10 +28,13 @@ const NavBar = () => {
       <li>
         <NavLink to="/events">Events</NavLink>
       </li>
-      {JSON.parse(localStorage.getItem('roles'))?.filter(v=>v==="EVENT_OPERATOR").length>0 &&
-       <li>
-        <NavLink to="/admin">Admin</NavLink>
-      </li>}
+      {JSON.parse(localStorage.getItem("roles"))?.filter(
+        (v) => v === "EVENT_OPERATOR"
+      ).length > 0 && (
+        <li>
+          <NavLink to="/admin">Admin</NavLink>
+        </li>
+      )}
       <li>
         <NavLink to="/about-us">About Us</NavLink>
       </li>
@@ -90,7 +92,9 @@ const NavBar = () => {
                         <img src={user.photoURL} />
                       </div>
                     )}
-                    {authen === null ? "": authen?.avatar!== null ? (
+                    {authen === null ? (
+                      ""
+                    ) : authen?.avatar !== null ? (
                       <img src={authen?.avatar} />
                     ) : (
                       <div className="w-10 bg-[#fec76f] rounded-full text-center leading-[38px]">
@@ -104,10 +108,10 @@ const NavBar = () => {
                   >
                     <li>
                       <a className="justify-between mb-5 items-center">
-                        <p className="text-2xl font-bold text-rose-600 text-ellipsis max-w-[100%]">
+                        <div className="text-2xl font-bold text-rose-600 text-ellipsis whitespace-nowrap max-w-[200px] overflow-hidden">
                           {user?.displayName}
                           {authen && authen.email}
-                        </p>
+                        </div>
                       </a>
                     </li>
                     <li>

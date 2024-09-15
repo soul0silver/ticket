@@ -10,7 +10,7 @@ export default function CreateEvent({ setOpen, setOnAdd }) {
     tag:'',
     title:'',
     introduce:'',
-    startDate:'',
+    startDay:'',
     startTime:'',
     description:'',
     price:0,
@@ -57,6 +57,7 @@ export default function CreateEvent({ setOpen, setOnAdd }) {
         toast.success("Create successfully!")}
       )
     })
+    setOpen()
   }
   return (
     <>
@@ -114,7 +115,7 @@ export default function CreateEvent({ setOpen, setOnAdd }) {
               <div className="flex items-center text-lg mb-6 md:mb-8">
                 <input
                   type="text"
-                  id="title"
+                  id="day"
                   className="bg-gray-200 rounded pl-12 py-2 md:py-4 focus:outline-none w-full"
                   placeholder="Event's title"
                   value={event.title}
@@ -137,7 +138,7 @@ export default function CreateEvent({ setOpen, setOnAdd }) {
                   id="date"
                   className="bg-gray-200 rounded pl-12 py-2 md:py-4 focus:outline-none w-full"
                   placeholder="Start day"
-                  value={event.startDate}
+                  value={event.startDay}
                   onChange={(e)=>setEvent({...event,startDay:e.target.value})}
                 />
               </div>

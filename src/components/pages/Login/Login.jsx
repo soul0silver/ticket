@@ -38,7 +38,12 @@ const Login = () => {
         localStorage.setItem("user", JSON.stringify(res.data));
         setAuth(res.data);
         notify();
-        navigate("/");
+        let rout =
+        res.data?.roles
+          ?.map((v) => v.authority)
+          .filter((r) => r === "EVENT_OPERATOR").length > 0;
+      if (!rout) navigate("/");
+      else navigate("/admin");
       })
       .catch((error) => {
         console.error(error);
@@ -73,7 +78,7 @@ const Login = () => {
                   JSON.stringify(res.data?.roles?.map((v) => v.authority))
                 );
               });
-            navigate("/");
+           
           });
       })
       .catch((error) => {
