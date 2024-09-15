@@ -1,7 +1,7 @@
 import { Route, Link, Routes } from "react-router-dom";
 import OrderManager from "./order/page";
 import { useState } from "react";
-import AllEvents from "./Event-mange/AllEvents";
+import EventManage from "./event-manage/EventManage";
 
 export default function AdminLayout() {
   const [route, setRoute] = useState("dashboard");
@@ -10,22 +10,21 @@ export default function AdminLayout() {
       <div className="flex w-full">
         <div>
           {/* component */}
-          <div className="min-h-screen min-w-[255px] flex flex-col flex-auto flex-shrink-0 antialiased bg-gray-50 text-gray-800">
-            <div className="fixed flex flex-col top-0 left-0 w-64 bg-white h-full border-r">
-              <div className="flex items-center justify-center h-14 border-b">
-                <div>Sidebar Navigation By iAmine</div>
-              </div>
+          <div className="h-[calc(100vh_-_50px)] min-w-[255px] flex flex-col flex-auto flex-shrink-0 antialiased bg-gray-50 text-gray-800">
+            <div className="fixed flex flex-col top-0 left-0 w-64 bg-white h-[calc(100vh_-_52px)] border-r z-[21]">
               <div className="overflow-y-auto overflow-x-hidden flex-grow">
                 <ul className="flex flex-col py-4 space-y-1">
-                  <li>
+                  <li onClick={() => setRoute("dashboard")}>
                     <Link
-                      onClick={() => setRoute("dashboard")}
-                      className={`relative flex flex-row items-center h-11 focus:outline-none hover:bg-gray-50 text-gray-600 hover:text-gray-800 border-l-4 border-transparent
-                               hover:border-indigo-500 pr-6 ${
-                                 route === "dashboard"
-                                   ? "border-indigo-500"
-                                   : ""
-                               }`}
+                      className={
+                        route !== "dashboard"
+                          ? `relative flex flex-row items-center h-11 focus:outline-none
+                       hover:bg-gray-50 text-gray-600 hover:text-gray-800 border-l-4
+                        hover:border-indigo-500 pr-6 `
+                          : `relative flex flex-row items-center h-11 focus:outline-none
+                        hover:bg-gray-50 text-gray-600 hover:text-gray-800 border-l-4
+                         border-indigo-500 pr-6 `
+                      }
                     >
                       <span className="inline-flex justify-center items-center ml-4">
                         <svg
@@ -48,14 +47,15 @@ export default function AdminLayout() {
                       </span>
                     </Link>
                   </li>
-                  <li>
+                  <li onClick={() => setRoute("event")}>
                     <Link
-                      onClick={() => setRoute("event")}
-                      className={`relative flex flex-row items-center h-11 focus:outline-none
-                       hover:bg-gray-50 text-gray-600 hover:text-gray-800 border-l-4 border-transparent
-                        hover:border-indigo-500 pr-6 ${
-                          route === "event" ? "border-indigo-500" : ""
-                        }`}
+                      className={route !== "event"
+                        ? `relative flex flex-row items-center h-11 focus:outline-none
+                     hover:bg-gray-50 text-gray-600 hover:text-gray-800 border-l-4
+                      hover:border-indigo-500 pr-6 `
+                        : `relative flex flex-row items-center h-11 focus:outline-none
+                      hover:bg-gray-50 text-gray-600 hover:text-gray-800 border-l-4
+                       border-indigo-500 pr-6 `}
                     >
                       <span className="inline-flex justify-center items-center ml-4">
                         <svg
@@ -74,10 +74,7 @@ export default function AdminLayout() {
                         </svg>
                       </span>
                       <span className="ml-2 text-sm tracking-wide truncate">
-                        Inbox
-                      </span>
-                      <span className="px-2 py-0.5 ml-auto text-xs font-medium tracking-wide text-indigo-500 bg-indigo-50 rounded-full">
-                        New
+                        Event manage
                       </span>
                     </Link>
                   </li>
@@ -87,8 +84,8 @@ export default function AdminLayout() {
           </div>
         </div>
         <div className="w-full">
-          {route==='dashboard'&& <OrderManager />}
-          {route==='event'&& <AllEvents />}
+          {route === "dashboard" && <OrderManager />}
+          {route === "event" && <EventManage />}
         </div>
       </div>
     </>

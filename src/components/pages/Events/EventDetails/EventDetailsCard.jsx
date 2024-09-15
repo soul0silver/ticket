@@ -16,42 +16,44 @@ const EventDetailsCard = ({ id }) => {
     introduce: "",
     tag: "",
   });
+  const [openAdd, setOpen] = useState(false);
   useEffect(() => {
     getEvent(id).then((res) => {
       let data = res.data;
       setEvent({
         ...event,
-        name: data.name,
+        name: data.title,
         image: data.image,
         price: data.price,
         short_description: data.title,
-        start_date: data.start_day,
-        start_time: data.start_time,
+        start_date: data.startDay,
+        start_time: data.startTime,
         introduce: data.introduce,
+        description: data.description,
         tag: data.tag,
       });
     });
-  });
+  }, []);
   async function getEvent(id) {
-    return instance.get(`url?id=${id}`);
+    return instance.get(`/events/${id}`);
   }
   if (!event) {
     return <div>Loading...</div>;
   }
-
-  async function sentOrder() {
-    let data = {
-      price: event.price,
-      currency: "dollar", // tiền tệ
-      method: "",
-      intent: "", // ý định
-      description: "",
-    };
-    return await axios.get("http://localhost:8080",data);
-  }
-
-  function setPayment() {
-    location.href = "http://localhost:8080"
+  const [order, setOrder] = useState(0);
+  function setPayment(e) {
+    let user = JSON.parse(localStorage.getItem("user"));
+    instance
+      .post("/tickets", {
+        eid: id,
+        name: event.name,
+        email: user.email,
+        quantity: order,
+      })
+      .then((res) => {
+        console.log(res);
+        window.open("http://localhost:8080/pay/" + res.data.id, '_blank', 'noopener,noreferrer') ;
+      });
   }
   return (
     <div className="max-w-screen-xl md:mx-auto mx-2 ">
@@ -74,23 +76,42 @@ const EventDetailsCard = ({ id }) => {
           </h2>
           <progress className="progress progress-error w-56"></progress>
           <p data-aos="flip-right" className="text-justify">
-            {event?.short_description}
+            {event?.introduce}
+          </p>
+          <p data-aos="flip-right" className="text-justify">
+            {event?.description}
           </p>
           <div className="flex">
             <p className="text-xl font-medium">
-              {new Date(event?.start_date).getDate()} <br /> {event?.start_time}{" "}
-              <br />
+              Start at {event?.start_date}  {event?.start_time} <br />
             </p>
           </div>
 
-          <div className="card-actions items-center justify-between ">
-            <label
-              onClick={() => setPayment()}
+          <div className="card-actions items-center justify-start flex">
+            {!openAdd && <label
+              onClick={() => setOpen(true)}
               htmlFor="my_modal_6"
               className="btn bg-gradient-to-br text-white from-pink-500 to-orange-400 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800"
             >
               Get Ticket
-            </label>
+            </label>}
+            {openAdd && <label
+              onClick={() => setPayment()}
+              htmlFor="my_modal_6"
+              className="btn bg-gradient-to-br text-white from-pink-500 to-orange-400 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800"
+            >
+              Check out
+            </label>}
+            {openAdd && <input
+                type="number"
+                placeholder="Quantity"
+                className="border border-gray-300 px-3 h-[46px] bg-white rounded-lg"
+                onInput={(e) => {
+                  console.log(e);
+                  
+                  setOrder(e.target.value);
+                }}
+              />}
           </div>
         </div>
       </div>

@@ -33,9 +33,9 @@ export default function Pagination({ total, setPage, current, allEle }) {
         <div className="">
           <p className="text-sm text-gray-700 space-x-1">
             Showing
-            <span className="font-medium"> {(current - 1) * 20 + 1} </span>
+            <span className="font-medium"> {(current - 1) * 20 + 1 } </span>
             to
-            <span className="font-medium">{allEle > 20 ? current * 20 : allEle} </span>
+            <span className="font-medium">{allEle > 20 ? current * 20 +1 : allEle} </span>
             of
             <span className="font-medium">{allEle} </span>
             results
@@ -44,7 +44,7 @@ export default function Pagination({ total, setPage, current, allEle }) {
         <div>
           <nav className="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
             <a
-              href="#"
+              onClick={()=>{setPage(current>0 ? current-1:0)}}
               className="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
             >
               <span className="sr-only">Previous</span>
@@ -64,7 +64,7 @@ export default function Pagination({ total, setPage, current, allEle }) {
             ))}
 
             <a
-              href="#"
+              onClick={()=>{setPage(current < total -1 ? current+1 : total -1)}}
               className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
             >
               <span className="sr-only">Next</span>

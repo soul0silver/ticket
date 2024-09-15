@@ -1,14 +1,17 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../AuthProvider/AuthProvider";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { updateProfile } from "firebase/auth";
+import axios from "axios";
+import { instance } from "../../../config/AxiosConfig";
 
 const Register = () => {
   const { createUser } = useContext(AuthContext);
   const location = useLocation();
   const navigate = useNavigate();
+  const [img, setImg] = useState();
 
   const notify = () => toast.success("Registration Successfully!");
   const notifyProfile = () => toast.success("Profile Updated Successfully!");
@@ -29,44 +32,69 @@ const Register = () => {
     const form = new FormData(e.currentTarget);
 
     const name = form.get("name");
-    const profilePic = form.get("profile");
     const email = form.get("email");
     const password = form.get("password");
     const accept = e.target.terms.checked;
 
-    if (password.length < 6) {
-      notifyPassword();
-      return;
-    } else if (!/[A-Z]/.test(password)) {
-      notifyPasswordChar();
-      return;
-    } else if (
-      !/(?=(.*[0-9]))(?=.*[\!@#$%^&*()\\[\]{}\-_+=~`|:;"'<>,./?])(?=.*[a-z])(?=(.*[A-Z]))(?=(.*)).{6,}/.test(
-        password
-      )
-    ) {
-      notifyPasswordSpecial();
-      return;
-    } else if (!accept) {
-      notifyTerms();
-      return;
-    }
-
-    createUser(email, password)
+    onUpload()
       .then((res) => {
-        console.log(res.user);
-        notify();
-        navigate(location?.state ? location.state : "/");
-
-        updateProfile(res.user, {
-          displayName: name,
-          photoURL: profilePic,
+        if (password.length < 6) {
+          notifyPassword();
+          return;
+        } else if (!/[A-Z]/.test(password)) {
+          notifyPasswordChar();
+          return;
+        } else if (
+          !/(?=(.*[0-9]))(?=.*[\!@#$%^&*()\\[\]{}\-_+=~`|:;"'<>,./?])(?=.*[a-z])(?=(.*[A-Z]))(?=(.*)).{6,}/.test(
+            password
+          )
+        ) {
+          notifyPasswordSpecial();
+          return;
+        } else if (!accept) {
+          notifyTerms();
+          return;
+        }
+        console.log({
+          email: email,
+          password: password,
+          avatar: res,
+          fullName: name
+        });
+        
+        instance.post('api/sv1/auth/register', {
+          email: email,
+          password: password,
+          avatar: res,
+          fullName: name
+        }).then(res=>{
+          toast.success("Registry successfully!");
+          setTimeout(()=>{
+            navigate("/login")
+          })
         })
-          .then(() => notifyProfile())
-          .catch();
       })
-      .catch((error) => notifyAlreadyProfile(error.message));
+      .catch((res) => console.log(res));
   };
+
+  async function onUpload() {
+    const data = new FormData();
+    if (img) {
+      data.append("image", img);
+      try {
+        const res = await axios.post("https://api.imgur.com/3/image/", data, {
+          headers: {
+            Authorization: "Client-ID 2739162cd7d6953",
+            "Content-Type": "image/jpeg",
+          },
+        });
+        return res.data.data.link;
+      } catch (err) {
+        return "";
+      }
+    }
+    return "";
+  }
 
   return (
     <div>
@@ -94,12 +122,12 @@ const Register = () => {
                 Your Profile Picture
               </label>
               <input
-                type="text"
+                type="file"
                 name="profile"
                 id="pic"
+                onChange={(e) => setImg(e.target.files[0])}
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                 placeholder="profile picture"
-                required
               />
             </div>
             <div>

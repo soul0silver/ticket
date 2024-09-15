@@ -8,8 +8,7 @@ import { instance } from "../../../config/AxiosConfig";
 const AllEvents = () => {
   const [events, setEvents] = useState([]);
   const [openAdd, setOpenAdd] = useState(false);
-  const eventsData = useLoaderData();
-  console.log(eventsData);
+  const [onAdd,setOnAdd]=useState(0);
   const isSponsor = JSON.parse(localStorage.getItem("roles"))?.filter(
     (r) => r === "SPONSOR"
   ).length === 1;
@@ -21,28 +20,28 @@ const AllEvents = () => {
           name: v.name,
           image: v.image,
           price: v.price,
-          short_description: v.title,
           title: v.title,
-          introduce: v.introduce
+          description: v.description,
+          introduce: v.introduce,
+
         };
 
         return value;
       });
       setEvents(data);
     });
-  });
+  },[]);
   const getData = async () => {
     try {
-      return await instance.get("url");
+      return await instance.get("/events/list");
     } catch (err) {
       return null;
     }
   };
-  const data = eventsData.events;
 
   return (
     <div>
-      {openAdd ? <CreateEvent setOpen={setOpenAdd} /> : null}
+      {openAdd ? <CreateEvent setOpen={setOpenAdd} setOnAdd={setOnAdd}/> : null}
       {isSponsor && <div className="fixed top-[25px] right-[30px] z-[20]">
         <label
           onClick={() => setOpenAdd(true)}
@@ -65,7 +64,7 @@ const AllEvents = () => {
         </div>
       </div>
       <div>
-        <EventsPage eData={data} />
+        <EventsPage eData={events} />
       </div>
     </div>
   );

@@ -14,8 +14,8 @@ const AllEventsCard = ({ e }) => {
             <img className="object-cover w-full h-96" src={image} alt="Shoes" />
           </figure>
           <div className="card-body">
-            <h2 className="card-title">{title}</h2>
-            <p>{introduce?.slice(0, 60)}</p>
+            <h2 className="card-title text-ellipsis w-full">{title}</h2>
+            <div className=" text-ellipsis w-full">{introduce?.slice(0, 60)}</div>
             <div className="card-actions justify-end">
               <Link
                 to={`/event/${id}`}

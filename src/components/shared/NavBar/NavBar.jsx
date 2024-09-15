@@ -17,9 +17,7 @@ const NavBar = () => {
   const handleLogOut = () => {
     localStorage.clear();
     setAuth()
-    logOut()
-      .then()
-      .catch((error) => console.error(error));
+    location.href = "/";
     
   };
 
@@ -31,9 +29,10 @@ const NavBar = () => {
       <li>
         <NavLink to="/events">Events</NavLink>
       </li>
-      <li>
+      {JSON.parse(localStorage.getItem('roles'))?.filter(v=>v==="EVENT_OPERATOR").length>0 &&
+       <li>
         <NavLink to="/admin">Admin</NavLink>
-      </li>
+      </li>}
       <li>
         <NavLink to="/about-us">About Us</NavLink>
       </li>
@@ -105,11 +104,10 @@ const NavBar = () => {
                   >
                     <li>
                       <a className="justify-between mb-5 items-center">
-                        <p className="text-2xl font-bold text-rose-600">
+                        <p className="text-2xl font-bold text-rose-600 text-ellipsis max-w-[100%]">
                           {user?.displayName}
                           {authen && authen.email}
                         </p>
-                        <span className="badge">New</span>
                       </a>
                     </li>
                     <li>

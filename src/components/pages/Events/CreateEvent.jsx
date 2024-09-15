@@ -1,10 +1,22 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { instance } from "../../../config/AxiosConfig";
+import { toast, ToastContainer } from "react-toastify";
 
-export default function CreateEvent({ setOpen }) {
+export default function CreateEvent({ setOpen, setOnAdd }) {
   const [pic, setPic] = useState();
   const [img, setImg] = useState();
-  const [event, setEvent] = useState({});
+  const [event, setEvent] = useState({
+    tag:'',
+    title:'',
+    introduce:'',
+    startDate:'',
+    startTime:'',
+    description:'',
+    price:0,
+    image:'',
+    uid: null
+  });
   useEffect(() => {
     return () => {
       pic && URL.revokeObjectURL(pic.preview);
@@ -28,15 +40,27 @@ export default function CreateEvent({ setOpen }) {
             "Content-Type": "image/jpeg",
           },
         });
-        setEvent({ ...event, image: res.data.data.link });
+        return res.data.data.link;
       } catch (err) {
         // Handle Error Here
         console.error(err);
+        return ''
       }
     }
+    return ''
+  }
+  function createEvent(){
+    onUpload().then(res=>{
+      let uid = JSON.parse(localStorage.getItem('user'))?.id
+      instance.post('/events/add', {...event, image:res, uid: uid}).then(re =>{
+        setOnAdd(res.id)
+        toast.success("Create successfully!")}
+      )
+    })
   }
   return (
     <>
+    <ToastContainer />
       <div
         className="fixed z-[21] w-full h-screen overflow-hidden flex items-center justify-center top-0 left-0"
         style={{ backgroundColor: "rgba(0, 0, 0, 0.54)" }}
@@ -52,6 +76,7 @@ export default function CreateEvent({ setOpen }) {
           <div className="flex justify-between">
             <div className="p-2 md:p-20 md:pr-4 flex flex-col items-center gap-4">
               <img style={{ width: "300px" }} src={pic?.preview} alt="" />
+              
               <label
                 style={{
                   border: "1px solid",
@@ -81,7 +106,9 @@ export default function CreateEvent({ setOpen }) {
                   type="text"
                   id="username"
                   className="bg-gray-200 rounded pl-12 py-2 md:py-4 focus:outline-none w-full"
-                  placeholder="Event's name"
+                  placeholder="Event's tag"
+                  value={event.tag}
+                  onChange={(e)=>setEvent({...event,tag:e.target.value})}
                 />
               </div>
               <div className="flex items-center text-lg mb-6 md:mb-8">
@@ -90,6 +117,8 @@ export default function CreateEvent({ setOpen }) {
                   id="title"
                   className="bg-gray-200 rounded pl-12 py-2 md:py-4 focus:outline-none w-full"
                   placeholder="Event's title"
+                  value={event.title}
+                  onChange={(e)=>setEvent({...event,title:e.target.value})}
                 />
               </div>
               <div className="flex items-center text-lg mb-6 md:mb-8">
@@ -98,6 +127,8 @@ export default function CreateEvent({ setOpen }) {
                   id="intro"
                   className="bg-gray-200 rounded pl-12 py-2 md:py-4 focus:outline-none w-full"
                   placeholder="Introduce"
+                  value={event.introduce}
+                  onChange={(e)=>setEvent({...event,introduce:e.target.value})}
                 />
               </div>
               <div className="flex items-center text-lg mb-6 md:mb-8">
@@ -106,13 +137,27 @@ export default function CreateEvent({ setOpen }) {
                   id="date"
                   className="bg-gray-200 rounded pl-12 py-2 md:py-4 focus:outline-none w-full"
                   placeholder="Start day"
+                  value={event.startDate}
+                  onChange={(e)=>setEvent({...event,startDay:e.target.value})}
+                />
+              </div>
+              <div className="flex items-center text-lg mb-6 md:mb-8">
+                <input
+                  type="time"
+                  id="time"
+                  className="bg-gray-200 rounded pl-12 py-2 md:py-4 focus:outline-none w-full"
+                  placeholder="Start time"
+                  value={event.startTime}
+                  onChange={(e)=>setEvent({...event,startTime:e.target.value})}
                 />
               </div>
               <div className="flex items-center text-lg mb-6 md:mb-8">
                 <textarea
-                  id="title"
+                  id="des"
                   className="bg-gray-200 rounded pl-12 py-2 md:py-4 focus:outline-none w-full max-h-[100px]"
                   placeholder="Desciption"
+                  value={event.description}
+                  onChange={(e)=>setEvent({...event,description:e.target.value})}
                 />
               </div>
               <div className="flex items-center text-lg mb-6 md:mb-8">
@@ -121,10 +166,12 @@ export default function CreateEvent({ setOpen }) {
                   id="password"
                   className="bg-gray-200 rounded pl-12 py-2 md:py-4 focus:outline-none w-full"
                   placeholder="Price"
+                  value={event.price}
+                  onChange={(e)=>setEvent({...event,price:e.target.value})}
                 />
               </div>
               <button
-                onClick={onUpload}
+                onClick={createEvent}
                 className="bg-gradient-to-b from-gray-700 to-gray-900 font-medium p-2 md:p-4 text-white uppercase w-full rounded"
               >
                 Save
