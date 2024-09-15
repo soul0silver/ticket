@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Chart as ChartJS } from "chart.js/auto";
-import OrderDetail from "./OrderDetail";
 import Pagination from "./Pagination";
 import { instance } from "../../../../config/AxiosConfig";
 
@@ -37,125 +36,17 @@ export default function OrderManager() {
   async function getSummary(id) {
     return await instance.get(`chart/${id}`);
   }
-  let myChart = null;
+  
   useEffect(() => {
     instance.get("events/rank").then((res) => {
       setEv(res.data);
       if (res?.data[0]?.id !== undefined)
-        getSummary(res?.data[0]?.id).then((res) => {
-          if (res.status === 200) {
-            let arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
-            let listData = arr.map((v) => {
-              let temp = res.data.filter((m) => m.month === v);
-              if (temp.length > 0) {
-                return temp[0].receive;
-              }
-              return 0;
-            });
-            let config = {
-              type: "bar",
-              data: {
-                labels: [
-                  "January",
-                  "February",
-                  "March",
-                  "April",
-                  "May",
-                  "June",
-                  "July",
-                  "August",
-                  "September",
-                  "October",
-                  "November",
-                  "December ",
-                ],
-                datasets: [
-                  {
-                    label: new Date().getFullYear(),
-                    backgroundColor: "#4a5568",
-                    borderColor: "#4a5568",
-                    data: listData,
-                    fill: false,
-                    barThickness: 8,
-                  },
-                ],
-              },
-              options: {
-                maintainAspectRatio: false,
-                responsive: true,
-                title: {
-                  display: false,
-                  text: "Orders Chart",
-                },
-                tooltips: {
-                  mode: "index",
-                  intersect: false,
-                },
-                hover: {
-                  mode: "nearest",
-                  intersect: true,
-                },
-                legend: {
-                  labels: {
-                    fontColor: "rgba(0,0,0,.4)",
-                  },
-                  align: "end",
-                  position: "bottom",
-                },
-                scales: {
-                  xAxes: [
-                    {
-                      display: true,
-                      scaleLabel: {
-                        display: true,
-                      },
-                      gridLines: {
-                        borderDash: [1],
-                        borderDashOffset: [2],
-                        color: "rgba(33, 37, 41, 0.3)",
-                        zeroLineColor: "rgba(33, 37, 41, 0.3)",
-                        zeroLineBorderDash: [2],
-                        zeroLineBorderDashOffset: [2],
-                      },
-                    },
-                  ],
-                  yAxes: [
-                    {
-                      ticks: {
-                        beginAtZero: true,
-                      },
-                      display: true,
-                      scaleLabel: {
-                        display: false,
-                        labelString: "Value",
-                      },
-                      gridLines: {
-                        borderDash: [2],
-                        drawBorder: false,
-                        borderDashOffset: [2],
-                        color: "rgba(33, 37, 41, 0.2)",
-                        zeroLineColor: "rgba(33, 37, 41, 0.15)",
-                        zeroLineBorderDash: [2],
-                        zeroLineBorderDashOffset: [2],
-                      },
-                    },
-                  ],
-                },
-              },
-            };
-
-            let ctx = document.getElementById("bar-chart").getContext("2d");
-            if (myChart != null) {
-              myChart.destroy();
-            }
-            myChart = new ChartJS(ctx, config);
-          }
-        });
+        setDe(res?.data[0]?.id)
     });
   }, []);
 
   useEffect(() => {
-    if (detail)
+    var myChart = null;
       getSummary(detail).then((res) => {
         if (res.status === 200) {
           let arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
@@ -242,7 +133,7 @@ export default function OrderManager() {
                     display: true,
                     scaleLabel: {
                       display: false,
-                      labelString: "Value",
+                      labelString: "value",
                     },
                     gridLines: {
                       borderDash: [2],
@@ -260,22 +151,18 @@ export default function OrderManager() {
           };
 
           let ctx = document.getElementById("bar-chart").getContext("2d");
-          if (myChart != null) {
-            myChart.destroy();
+          let chartStatus = ChartJS.getChart("bar-chart");
+          if (chartStatus !== undefined) {
+            chartStatus.destroy();
           }
+          
           myChart = new ChartJS(ctx, config);
         }
       });
   }, [detail]);
   return (
     <>
-      {detail && (
-        <OrderDetail
-          id={detail}
-          close={setDe}
-          order={data.list?.filter((v, i) => v.id === detail)[0]}
-        />
-      )}
+     
       <div className="flex py-8 flex-col space-y-6 items-center justify-center min-h-[600px] lg:pl-[20px] pl-[20px] pr-[10px] mb-5">
         <div className="w-full  mx-auto bg-white shadow-lg rounded-sm border border-gray-200">
           <header className="px-5 py-4 border-b border-gray-300">
