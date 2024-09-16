@@ -1,10 +1,13 @@
 import { Route, Link, Routes } from "react-router-dom";
 import OrderManager from "./order/page";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import EventManage from "./event-manage/EventManage";
 
 export default function AdminLayout() {
   const [route, setRoute] = useState("dashboard");
+  useEffect(()=>{
+    
+  },[])
   return (
     <>
       <div className="flex w-full">

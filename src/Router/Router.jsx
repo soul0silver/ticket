@@ -67,7 +67,12 @@ const router = createBrowserRouter([
         path: "/admin",
         element: (
           <PrivateRoute>
-            <AdminLayout />
+            {JSON.parse(localStorage.getItem('roles'))
+              ?.filter((r) => r === "EVENT_OPERATOR").length > 0 ? (
+              <AdminLayout />
+            ) : (
+              <ErrorPage />
+            )}
           </PrivateRoute>
         ),
       },
